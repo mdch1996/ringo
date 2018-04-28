@@ -3,5 +3,5 @@ from . import views
 
 urlpatterns = [
     url(r'^led/$', views.led, name='led'),
-    url(r'^camera/$', views.camera, name='camera'),
+    url(r'^temp/$', views.read_temp, name='temp'),
 ]

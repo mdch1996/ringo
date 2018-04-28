@@ -54,12 +54,12 @@ def check_door_opening():
 
     # Pin Definitons:
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
     input_state = GPIO.input(button_pin)
     # if not lock:
     #     return
-    if lock and not input_state:
+    if lock and input_state:
         lock.acquire()
         print("------press button------")
         datetime_now = str(datetime.now())
