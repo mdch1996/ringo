@@ -1,17 +1,29 @@
 from requests import get, put, post, exceptions
 import RPi.GPIO as GPIO
-import time
 from datetime import datetime
 # from .models import Traffic
-import redis_lock
+
 
 # global variable
 server_address = 'http://192.168.1.34:8000'
 ip = ''
-lock = ""
-# conn = redis_lock.StrictRedis()
-# lock = redis_lock.Lock(conn, "name-of-the-lock")
-# lock.release()
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+
+def my_callback(channel):
+    print("pushed")
+    datetime_now = str(datetime.now())
+    data = {
+        "date_of_ring": datetime_now,
+        "raspberry_pi_code": 23456,
+    }
+    send_ring(data)
+    take_pic()
+
+
+GPIO.add_event_detect(36, GPIO.RISING, callback=my_callback, bouncetime=400)
 
 
 def check_ip():
@@ -45,32 +57,6 @@ def send_ip(data):
         return r.status_code
     except exceptions.RequestException:
         pass
-
-
-def check_door_opening():
-
-    # Pin Definitons:
-    button_pin = 36
-
-    # Pin Definitons:
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
-    input_state = GPIO.input(button_pin)
-    # if not lock:
-    #     return
-    if lock and input_state:
-        lock.acquire()
-        print("------press button------")
-        datetime_now = str(datetime.now())
-        data = {
-            "date_of_ring": datetime_now,
-            "raspberry_pi_code": 23456,
-        }
-        send_ring(data)
-        take_pic()
-        time.sleep(10)
-        lock.release()
 
 
 def send_ring(data):
