@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 # global variable
-server_address = 'http://192.168.1.34:8000'
+server_address = 'http://192.168.1.35:8000'
 ip = ''
 
 GPIO.setmode(GPIO.BOARD)
@@ -17,7 +17,7 @@ def my_callback(channel):
     datetime_now = str(datetime.now())
     data = {
         "date_of_ring": datetime_now,
-        "raspberry_pi_code": 23456,
+        "raspberry_pi_code": 12345,
     }
     send_ring(data)
     take_pic()
