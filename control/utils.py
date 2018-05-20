@@ -1,13 +1,14 @@
-from requests import get, put, post, exceptions
+from requests import get, patch, post, exceptions
 import RPi.GPIO as GPIO
 from datetime import datetime
-# from .models import Traffic
+from . import models
 
 
 # global variable
 server_address = 'http://192.168.1.35:8000'
 ip = ''
 
+# GPIO for ring
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
@@ -15,10 +16,14 @@ GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 def my_callback(channel):
     print("pushed")
     datetime_now = str(datetime.now())
+    raspberry_pi_code = models.Device.objects.get(pk=1)
+    # raspberry_pi_code = 12345
+
     data = {
         "date_of_ring": datetime_now,
-        "raspberry_pi_code": 12345,
+        "raspberry_pi_code": raspberry_pi_code,
     }
+    print("------send_ring------", data)
     send_ring(data)
     take_pic()
 
@@ -51,9 +56,9 @@ def get_ip():
 
 
 def send_ip(data):
-    url_put = server_address + "/api/ip/"
+    url_patch = server_address + "/api/ip/"
     try:
-        r = put(url=url_put, data=data)
+        r = patch(url=url_patch, data=data)
         return r.status_code
     except exceptions.RequestException:
         pass
